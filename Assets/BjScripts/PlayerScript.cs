@@ -1,7 +1,10 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -17,16 +20,25 @@ public class PlayerScript : MonoBehaviour
     public GameObject Player;
     //index of next card
     public int cardIndex = 0;
-    private float xx = (float)728.6673;
+    private float xx = (float)112.0623;
     private float yy = 0;
+    private float scale = (float) 1.494164;
+    private float upnumber = 250;
+    public Text pHandVal;
+
+    public bool bust = false;
     // tracking aces for conversion between 1 and 11
     List<CardScript> aceList = new List<CardScript>();
     public UnityEngine.UI.Image imgRenderer;
-    public void StartHand()
+    public void StartCard1()
     {
-        GetCard();
-        GetCard();
-        Debug.Log("Inital hand value: " + handValue);
+        StartCoroutine(DelayCard(0.75f));
+        
+        
+    }
+    public void StartCard2(){
+        StartCoroutine(DelayCard(2.25f));
+        
     }
     public void HitCard() {
         
@@ -55,6 +67,7 @@ public class PlayerScript : MonoBehaviour
         imgRenderer = hand[cardIndex].GetComponent<UnityEngine.UI.Image>();
         imgRenderer.sprite = hand[cardIndex].GetComponent<SpriteRenderer>().sprite;
         handValue += cardValue;
+        Debug.Log("added " + handValue + " to intial handVal");
         if (cardValue == 11)
         {
             aceList.Add(hand[0].GetComponent<CardScript>());
@@ -85,19 +98,27 @@ public class PlayerScript : MonoBehaviour
 
         handValue += cardValue;
         //decides which value of ace to use
-        
+       
+        upnumber += 50;
         if (handValue > 21 && aceList.Count > 0)
         {
             handValue -= 10;
             aceList.RemoveAt(0);
             Debug.Log("removed 10");
         }
-        xx += (float)112.0623;
+        else if(handValue>21){
+            bust = true;
+            Debug.Log("Player Busts!");
+        }
+        Debug.Log(xx);
+        //xx += pCard2.transform.position.x;
+        xx = 140 + upnumber;
+        //Debug.Log("new player xx value: " + xx);
         yy = pCard2.transform.position.y;
-        //Debug.Log(pCard2.transform.position.x);
+        
         Vector3 newPosition = new Vector3(xx, yy, 0);
-        //Debug.Log(newPosition);
-
+        
+        newObj.transform.localScale = new Vector3(scale,scale,scale);
         newObj.GetComponent<RectTransform>().sizeDelta = new Vector2((float)110.2668, (float)149.2806);
         newObj.transform.position = newPosition;
         UnityEngine.UI.Image NewImage = newObj.AddComponent<UnityEngine.UI.Image>(); //Add the Image Component script
@@ -105,6 +126,26 @@ public class PlayerScript : MonoBehaviour
         newObj.SetActive(true);
 
 
+    }
+    public bool GetBust(){
+        return bust;
+    }
+    public int GetHandVal(){
+        return handValue;
+    }
+    public int GetCard2Val(){
+        var pCard2 = GameObject.Find("pCard2");
+        return pCard2.GetComponent<CardScript>().GetValue();
+    }
+    IEnumerator DelayCard(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        GetCard();
+        pHandVal.text = handValue.ToString();
+        if(handValue ==21){
+            pHandVal.text = "BLACKJACKKKK";
+        }
+        Debug.Log("Inital hand value: " + handValue);
     }
     
    

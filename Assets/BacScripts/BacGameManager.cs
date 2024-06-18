@@ -15,8 +15,10 @@ public class BacGameManager : MonoBehaviour
     void Start()
     {
         DealBtn.onClick.AddListener(() => DealClicked()); 
+        ResetBtn.onClick.AddListener(() => ResetClicked());
     }
     private void DealClicked() {
+        GameObject.Find("Deck").GetComponent<BacDeckScript>().Shuffle();
         bankerScript.StartHand();
     
     }

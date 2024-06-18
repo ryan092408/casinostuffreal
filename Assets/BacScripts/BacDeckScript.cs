@@ -5,7 +5,7 @@ using UnityEngine;
 public class BacDeckScript : MonoBehaviour
 {
     public Sprite[] cardSprites;
-    private int[] cardValues = new int[54];
+    private int[] cardValues = new int[52];
     int cIndex = 0;
     void Start()
     {
@@ -68,8 +68,5 @@ public class BacDeckScript : MonoBehaviour
         cIndex++;
         return cardScript.GetValue();
     }
-    public Sprite GetCardBack()
-    {
-        return cardSprites[0];
-    }
+    
 }
